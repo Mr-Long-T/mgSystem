@@ -1,7 +1,9 @@
 const path = require('path')
 
 module.exports = {
+  lintOnSave: false,
   outputDir: './build',
+  
   // configureWebpack: {
   //   resolve: {
   //     alias: {

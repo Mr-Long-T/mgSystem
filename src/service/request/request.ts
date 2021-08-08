@@ -60,7 +60,7 @@ class MyRequest {
         //移除loding
         setTimeout(() => {
           this.loading?.close()
-        }, 1000)
+        }, 500)
 
         //拦截器做了一层封装、res.data拿到想要的数据
         const data = res.data
