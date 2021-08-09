@@ -6,7 +6,7 @@
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
-        <el-input v-model="account.password" />
+        <el-input v-model="account.password" show-password />
       </el-form-item>
     </el-form>
   </div>
@@ -15,23 +15,40 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import { rules } from '../config/account-config'
-
 import { ElForm } from 'element-plus'
+
+import localCache from '../../../utils/cache'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
     const account = reactive({
-      name: '',
-      password: ''
+      name: localCache.getCache('name') ?? '',
+      password: localCache.getCache('password') ?? ''
     })
+
+    const store = useStore()
 
     const formRef = ref<InstanceType<typeof ElForm>>()
 
-    const loginAction = () => {
-      //validate ==> 验证 ==> 返回valid(成功或失败)
+    const loginAction = (isKeepPwd: boolean) => {
+      //validate ==> 验证(格式) ==> 返回valid(成功或失败)
       formRef.value?.validate((valid) => {
         if (valid) {
-          console.log(valid, '执行真正的登录逻辑')
+          // console.log(valid, '下面执行真正的登录逻辑')
+          //1.判断是否记住密码
+          if (isKeepPwd) {
+            //本地缓存
+            localCache.setCache('name', account.name)
+            localCache.setCache('password', account.password)
+          } else {
+            //清除缓存
+            // localCache.removeCahe('name')
+            localCache.removeCahe('password')
+          }
+
+          //2.开始进行登录(异步请求)
+          store.dispatch('loginModule/accountLoginAction', { ...account })
         }
       })
     }
