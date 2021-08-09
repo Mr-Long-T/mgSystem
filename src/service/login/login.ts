@@ -25,7 +25,7 @@ export function requestUserInfoById(id: number) {
 }
 
 //2.请求用户菜单信息
-export function requestUserMenuById(id: number) {
+export function requestUserMenusById(id: number) {
   return Request.get<IDataType>({
     url: LoginAPI.UserMenus + id + '/menu'
   })

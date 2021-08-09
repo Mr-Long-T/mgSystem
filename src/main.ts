@@ -10,6 +10,7 @@ import './assets/css/index.less'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { setupStore } from './store'
 
 import Request from './service'
 
@@ -19,6 +20,10 @@ const app = createApp(App)
 registerApp(app)
 
 app.use(router).use(store)
+
+//每次刷新时，初始化store
+setupStore()
+
 app.mount('#app')
 
 //请求1

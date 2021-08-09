@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
 
-import { accountLoginRequest, requestUserInfoById, requestUserMenuById } from '@/service/login/login'
+import { accountLoginRequest, requestUserInfoById, requestUserMenusById } from '@/service/login/login'
 import localCache from '@/utils/cache'
 
 import { IAccount } from '@/service/login/types'
@@ -32,13 +32,14 @@ const loginModule: Module<ILogoinState, IRootState> = {
     }
   },
 
+  //网络请求
   actions: {
     //账号登录
     async accountLoginAction({ commit }, payload: IAccount) {
-      console.log('执行accountLoginAction', payload)
+      // console.log('执行accountLoginAction', payload)
       //1.实现登录请求
       const LoginRes = await accountLoginRequest(payload)
-      console.log(LoginRes.data.token)
+      // console.log(LoginRes.data.token)
       const { id, token } = LoginRes.data
       commit('changeToken', token)
       localCache.setCache('token', token)
@@ -50,13 +51,29 @@ const loginModule: Module<ILogoinState, IRootState> = {
       localCache.setCache('userInfo', userInfo)
 
       //3.请求用户菜单信息
-      const userMenuRes = await requestUserMenuById(userInfo.role.id)
+      const userMenuRes = await requestUserMenusById(userInfo.role.id)
       const userMenus = userMenuRes.data
       commit('changeUserMenus', userMenus)
       localCache.setCache('userMenus', userMenus)
 
       //4.跳转首页
       router.push('./main')
+    },
+
+    //登录状态下刷新页面调用此方法(去缓存中拿数据)
+    loadLocalLogin({ commit }) {
+      const token = localCache.getCache('token')
+      if (token) {
+        commit('changeToken', token)
+      }
+      const userInfo = localCache.getCache('token')
+      if (userInfo) {
+        commit('changeUserInfo', userInfo)
+      }
+      const userMenus = localCache.getCache('token')
+      if (userMenus) {
+        commit('changeUserMenus', userMenus)
+      }
     }
 
     //手机号登录

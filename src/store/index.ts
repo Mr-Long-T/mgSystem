@@ -17,4 +17,9 @@ const store = createStore<IRootState>({
   }
 })
 
+//对Store做初始化（登录状态下刷新的话，store里的值销毁问题）
+export function setupStore() {
+  store.dispatch('loginModule/loadLocalLogin')
+}
+
 export default store
