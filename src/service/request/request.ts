@@ -22,19 +22,13 @@ class MyRequest {
     this.showLoading = config.showLoading ?? false
 
     //对应实例传入不同的拦截器
-    this.instance.interceptors.request.use(
-      this.interceptors?.requestInterceptor,
-      this.interceptors?.requestInterceptorCatch
-    )
-    this.instance.interceptors.response.use(
-      this.interceptors?.responseInterceptor,
-      this.interceptors?.responseInterceptorCatch
-    )
+    this.instance.interceptors.request.use(this.interceptors?.requestInterceptor, this.interceptors?.requestInterceptorCatch)
+    this.instance.interceptors.response.use(this.interceptors?.responseInterceptor, this.interceptors?.responseInterceptorCatch)
 
     //定义所有实例的拦截器（全局）
     this.instance.interceptors.request.use(
       (config) => {
-        console.log('所有请求拦截，成功')
+        // console.log('所有请求拦截，成功')
 
         //如果showLoading为true
         if (this.showLoading) {
@@ -49,13 +43,13 @@ class MyRequest {
         return config
       },
       (err) => {
-        console.log('所有请求拦截，失败')
+        // console.log('所有请求拦截，失败')
         return err
       }
     )
     this.instance.interceptors.response.use(
       (res) => {
-        console.log('所有响应拦截，成功')
+        // console.log('所有响应拦截，成功')
 
         //移除loding
         setTimeout(() => {
@@ -65,14 +59,15 @@ class MyRequest {
         //拦截器做了一层封装、res.data拿到想要的数据
         const data = res.data
         //服务器返回的失败处理信息：200 -->成功，但返回{data: "", success:false, returnCode:-1001}
-        if (data.returnCode === '-1001') {
-          console.log('请求失败！，错误信息')
-        } else {
-          return data
-        }
+        // if (data.returnCode === '-1001') {
+        //   console.log('请求失败！，错误信息')
+        // } else {
+        //   return data
+        // }
+        return data
       },
       (err) => {
-        console.log('所有响应拦截，失败')
+        // console.log('所有响应拦截，失败')
         //例子
         if (err.response.status === 404) {
           console.log('404')
@@ -101,7 +96,7 @@ class MyRequest {
             //更新res
             res = config.interceptors.responseInterceptor(res)
           }
-          console.log(res)
+          // console.log(res)
           //请求完成后将showLoading 转为false
           this.showLoading = false
 
@@ -119,6 +114,22 @@ class MyRequest {
         this.showLoading = config.showLoading
       }
     })
+  }
+
+  get<T>(config: RequestConfig<T>): Promise<T> {
+    return this.request<T>({ ...config, method: 'GET' })
+  }
+
+  post<T>(config: RequestConfig<T>): Promise<T> {
+    return this.request<T>({ ...config, method: 'POST' })
+  }
+
+  delete<T>(config: RequestConfig<T>): Promise<T> {
+    return this.request<T>({ ...config, method: 'DELETE' })
+  }
+
+  patch<T>(config: RequestConfig<T>): Promise<T> {
+    return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
 

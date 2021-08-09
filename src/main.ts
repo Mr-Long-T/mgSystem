@@ -38,20 +38,19 @@ app.mount('#app')
 //   }
 // })
 
-interface DataType {
-  data: any
-  returnCode: string
-  success: boolean
-}
-
+// interface DataType {
+//   data: any
+//   returnCode: string
+//   success: boolean
+// }
 // 请求2
-Request.request<DataType>({
-  url: '/home/multidata',
-  method: 'GET',
-  //根据需求是否显示正在加载   (需要对类型做扩展)
-  showLoading: true
-}).then((res) => {
-  console.log(res.data)
-  console.log(res.returnCode)
-  console.log(res.success)
-})
+// Request.request<DataType>({
+//   url: '/home/multidata',
+//   method: 'GET',
+//   //根据需求是否显示正在加载   (需要对类型做扩展)
+//   showLoading: true
+// }).then((res) => {
+//   console.log(res.data)
+//   console.log(res.returnCode)
+//   console.log(res.success)
+// })

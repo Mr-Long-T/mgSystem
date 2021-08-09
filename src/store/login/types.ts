@@ -1,4 +1,5 @@
 export interface ILogoinState {
-  token: string,
+  token: string
   userInfo: any
+  userMenus: any
 }

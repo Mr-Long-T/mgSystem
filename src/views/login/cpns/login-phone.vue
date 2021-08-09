@@ -7,7 +7,7 @@
 
       <el-form-item label="验证码" prop="verifyCode">
         <div class="get-code">
-          <el-input v-model="phone.verifyCode" class="el_input"/>
+          <el-input v-model="phone.verifyCode" class="el_input" />
           <el-button type="primary">获取验证码</el-button>
         </div>
       </el-form-item>
@@ -34,9 +34,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-.get-code{
+.get-code {
   display: flex;
-  .el_input{
+  .el_input {
     margin-right: 5px;
   }
 }

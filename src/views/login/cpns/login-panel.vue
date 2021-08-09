@@ -13,7 +13,7 @@
         <template #label>
           <span><i class="el-icon-mobile-phone"></i> 手机登录</span>
         </template>
-        <login-phone ref="phoneRef"/>
+        <login-phone ref="phoneRef" />
       </el-tab-pane>
     </el-tabs>
 
@@ -55,8 +55,7 @@ export default defineComponent({
         //? 有值调用
         accountRef.value?.loginAction(isKeepPwd.value)
       } else {
-        console.log("phoneRef调用login-phone组件中loginAction方法");
-
+        console.log('phoneRef调用login-phone组件中loginAction方法')
       }
     }
     return {

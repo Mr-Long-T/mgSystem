@@ -1,4 +1,4 @@
 export interface IRootState {
-  name: string,
+  name: string
   age: number
 }
