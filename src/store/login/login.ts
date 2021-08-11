@@ -1,15 +1,19 @@
 import { Module } from 'vuex'
 
-import { accountLoginRequest, requestUserInfoById, requestUserMenusById } from '@/service/login/login'
+import {
+  accountLoginRequest,
+  requestUserInfoById,
+  requestUserMenusById
+} from '@/service/login/login'
 import localCache from '@/utils/cache'
 
 import { IAccount } from '@/service/login/types'
-import { ILogoinState } from './types'
+import { ILoginState } from './types'
 import { IRootState } from '../types'
 import router from '@/router'
 
 //Module<S, R>  S->模块中state的类型 R->跟store中state的类型
-const loginModule: Module<ILogoinState, IRootState> = {
+const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
   state: () => {
     return {
@@ -66,11 +70,11 @@ const loginModule: Module<ILogoinState, IRootState> = {
       if (token) {
         commit('changeToken', token)
       }
-      const userInfo = localCache.getCache('token')
+      const userInfo = localCache.getCache('userInfo')
       if (userInfo) {
         commit('changeUserInfo', userInfo)
       }
-      const userMenus = localCache.getCache('token')
+      const userMenus = localCache.getCache('userMenus')
       if (userMenus) {
         commit('changeUserMenus', userMenus)
       }

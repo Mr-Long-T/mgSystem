@@ -1,6 +1,6 @@
-import { createStore } from 'vuex'
+import { createStore, Store, useStore as useVuexStore } from 'vuex'
 import loginModule from './login/login'
-import { IRootState } from './types'
+import { IRootState, IStoreType } from './types'
 
 const store = createStore<IRootState>({
   state: () => {
@@ -17,9 +17,14 @@ const store = createStore<IRootState>({
   }
 })
 
-//对Store做初始化（登录状态下刷新的话，store里的值销毁问题）
+//对Store做初始化（登录状态下刷新的话，store里的值会销毁问题）
 export function setupStore() {
   store.dispatch('loginModule/loadLocalLogin')
+}
+
+//定义自己的useStore 类型为-->Root和模块的组合类型
+export function useStore(): Store<IStoreType> {
+  return useVuexStore()
 }
 
 export default store

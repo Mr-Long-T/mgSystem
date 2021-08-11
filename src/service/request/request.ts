@@ -22,8 +22,14 @@ class MyRequest {
     this.showLoading = config.showLoading ?? false
 
     //对应实例传入不同的拦截器
-    this.instance.interceptors.request.use(this.interceptors?.requestInterceptor, this.interceptors?.requestInterceptorCatch)
-    this.instance.interceptors.response.use(this.interceptors?.responseInterceptor, this.interceptors?.responseInterceptorCatch)
+    this.instance.interceptors.request.use(
+      this.interceptors?.requestInterceptor,
+      this.interceptors?.requestInterceptorCatch
+    )
+    this.instance.interceptors.response.use(
+      this.interceptors?.responseInterceptor,
+      this.interceptors?.responseInterceptorCatch
+    )
 
     //定义所有实例的拦截器（全局）
     this.instance.interceptors.request.use(

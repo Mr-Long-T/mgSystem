@@ -16,13 +16,13 @@ module.exports = {
     }
   },
   // 2.配置方式二: 和webpack属性完全一致, 最后会进行合并
-  configureWebpack: {
-    resolve: {
-      alias: {
-        components: '@/components'
-      }
-    }
-  }
+  // configureWebpack: {
+  //   resolve: {
+  //     alias: {
+  //       components: '@/components'
+  //     }
+  //   }
+  // }
   // configureWebpack: (config) => {
   //   config.resolve.alias = {
   //     '@': path.resolve(__dirname, 'src'),
@@ -30,9 +30,9 @@ module.exports = {
   //   }
   // }
   // 3.配置方式三:
-  // chainWebpack: (config) => {
-  //   config.resolve.alias
-  //     .set('@', path.resolve(__dirname, 'src'))
-  //     .set('components', '@/components')
-  // }
+  chainWebpack: (config) => {
+    config.resolve.alias
+      .set('@', path.resolve(__dirname, 'src'))
+      .set('components', '@/components')
+  }
 }
