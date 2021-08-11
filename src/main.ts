@@ -12,7 +12,7 @@ import router from './router'
 import store from './store'
 import { setupStore } from './store'
 
-import Request from './service'
+// import Request from './service'
 
 const app = createApp(App)
 // app.use(ElementPlus)
