@@ -31,8 +31,6 @@ module.exports = {
   // }
   // 3.配置方式三:
   chainWebpack: (config) => {
-    config.resolve.alias
-      .set('@', path.resolve(__dirname, 'src'))
-      .set('components', '@/components')
+    config.resolve.alias.set('@', path.resolve(__dirname, 'src')).set('components', '@/components')
   }
 }
