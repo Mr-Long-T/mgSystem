@@ -11,6 +11,7 @@ import { IAccount } from '@/service/login/types'
 import { ILoginState } from './types'
 import { IRootState } from '../types'
 import router from '@/router'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 
 //Module<S, R>  S->模块中state的类型 R->跟store中state的类型
 const loginModule: Module<ILoginState, IRootState> = {
@@ -33,6 +34,12 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
     changeUserMenus(state, userMenus: any) {
       state.userMenus = userMenus
+
+      //userMenus 映射到 routes
+      const routes = mapMenusToRoutes(userMenus)
+      console.log('需要加载的路由routes', routes)
+
+      //将routes 添加到 router.main.children
     }
   },
 
