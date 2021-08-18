@@ -37,9 +37,13 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       //userMenus 映射到 routes
       const routes = mapMenusToRoutes(userMenus)
-      console.log('需要加载的路由routes', routes)
+      // console.log('需要加载的路由routes', routes)
 
       //将routes 添加到 router.main.children
+      routes.forEach((route) => {
+        //动态添加路由（添加到main的children里面去了）
+        router.addRoute('main', route)
+      })
     }
   },
 

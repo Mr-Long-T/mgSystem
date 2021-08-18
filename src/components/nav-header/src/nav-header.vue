@@ -5,6 +5,10 @@
       :class="isFold ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
       @click="foldClick"
     ></i>
+    <div class="content">
+      <div>面包屑</div>
+      <div class="user-info"></div>
+    </div>
   </div>
 </template>
 
@@ -29,8 +33,21 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-.fold-menu {
-  font-size: 30px;
-  cursor: pointer;
+.nav-header {
+  display: flex;
+  width: 100%;
+
+  .fold-menu {
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    padding: 0 20px;
+  }
 }
 </style>
