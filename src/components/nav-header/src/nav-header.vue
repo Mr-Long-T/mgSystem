@@ -7,15 +7,21 @@
     ></i>
     <div class="content">
       <div>面包屑</div>
-      <div class="user-info"></div>
+      <div class="user-info">
+        <user-info />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import UserInfo from './user-info.vue'
 
 export default defineComponent({
+  components: {
+    UserInfo
+  },
   emits: ['foldChange'],
   //将foldChange事件传给父组件，再来控制menus的收缩
   setup(props, { emit }) {
@@ -47,7 +53,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     flex: 1;
-    padding: 0 20px;
+    padding: 0 10px;
   }
 }
 </style>
