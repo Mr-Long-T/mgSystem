@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import localCache from '../utils/cache'
 
+import { firstMenu } from '@/utils/map-menus'
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -18,6 +20,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:pathMatch(.*)*',
+    name: 'notFound',
     component: () => import('@/views/not-found/not-found.vue')
   }
 ]
@@ -34,6 +37,14 @@ router.beforeEach((to) => {
     if (!token) {
       return '/login'
     }
+  }
+  // console.log(router.getRoutes())
+  // //即将跳转的对象
+  // console.log(to)
+
+  //跳转到menu中第一项
+  if (to.path === '/main') {
+    return firstMenu.url
   }
 })
 

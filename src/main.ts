@@ -18,11 +18,12 @@ const app = createApp(App)
 // app.use(ElementPlus)
 
 registerApp(app)
-
-app.use(router).use(store)
+app.use(store)
 
 //每次刷新时，初始化store
+//需要放在router之前，在之前就要注册好动态路由
 setupStore()
+app.use(router)
 
 app.mount('#app')
 

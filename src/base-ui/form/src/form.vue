@@ -51,7 +51,7 @@ export default defineComponent({
     },
     labelWidth: {
       type: String,
-      default: '100px'
+      default: '120px'
     },
     itemStyle: {
       type: Object,

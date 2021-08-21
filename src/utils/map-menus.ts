@@ -1,5 +1,7 @@
 import { RouteRecordRaw } from 'vue-router'
 
+let firstMenu: any = null
+
 //将菜单映射带route数组里面，再将所有路由添加到children里面
 export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
@@ -29,9 +31,13 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   const _recurseGetRoute = (menus: any[]) => {
     for (const menu of menus) {
       if (menu.type === 2) {
-        //匹配需要加载的路由
+        // 匹配需要加载的路由
         const route = allRoutes.find((route) => route.path === menu.url)
         if (route) routes.push(route)
+        // 判断firstMenu有无值，没有值，赋第一个找到的menu
+        if (!firstMenu) {
+          firstMenu = menu
+        }
       } else {
         _recurseGetRoute(menu.children)
       }
@@ -40,3 +46,16 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   _recurseGetRoute(userMenus)
   return routes
 }
+
+export function pathMapToMenu(userMenus: any[], currentPath: string): any {
+  for (const menu of userMenus) {
+    if (menu.type === 1) {
+      const findMenu = pathMapToMenu(menu.children ?? [], currentPath)
+      if (findMenu) return findMenu
+    } else if (menu.type === 2 && menu.url === currentPath) {
+      return menu
+    }
+  }
+}
+
+export { firstMenu }

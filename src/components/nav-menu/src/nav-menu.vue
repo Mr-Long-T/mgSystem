@@ -4,8 +4,9 @@
       <img class="img" src="~@/assets/img/logo.svg" alt="logo" />
       <span class="title" v-if="!collapse">Mr.Long</span>
     </div>
+    <!-- default-active:2 默认id=2的菜单，导致刷新后选中跳到默认菜单上 -->
     <el-menu
-      default-active="2"
+      :default-active="defaultActiveVal"
       class="el-menu-vertical"
       :collapse="collapse"
       background-color="#0c2135"
@@ -43,9 +44,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+
+import { pathMapToMenu } from '@/utils/map-menus'
 
 export default defineComponent({
   props: {
@@ -55,10 +58,21 @@ export default defineComponent({
     }
   },
   setup() {
+    //刷新--> 1.拿到当前路径 --> 2.根据路径去匹配menu --> 拿到menu.id作为defaultActiveVal的值
+    const route = useRoute()
+    const currentPath = route.path
+
+    //store
     const store = useStore()
     //-->类型检测
     const userMenus = computed(() => store.state.loginModule.userMenus)
+    //computed --> ref对象  获取值通过.value
 
+    //匹配menu
+    const menu = pathMapToMenu(userMenus.value, currentPath)
+    const defaultActiveVal = ref(menu.id + '')
+
+    //router
     const router = useRouter()
     const menuItemClick = (item: any) => {
       router.push({
@@ -68,7 +82,8 @@ export default defineComponent({
 
     return {
       userMenus,
-      menuItemClick
+      menuItemClick,
+      defaultActiveVal
     }
   }
 })
