@@ -1,6 +1,7 @@
 import Request from '../index'
 
-import { IAccount, IDataType, ILoginRes } from './types'
+import { IAccount, ILoginRes } from './types'
+import { IDataType } from '../types'
 
 //一个登录模块可能有多个url
 enum LoginAPI {
