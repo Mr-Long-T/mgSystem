@@ -46,7 +46,7 @@ export default defineComponent({
 
 <style scoped>
 .header {
-  color: rgb(2, 226, 159);
+  color: rgba(0, 138, 252, 0.363);
 }
 .handle-btns {
   text-align: right;
