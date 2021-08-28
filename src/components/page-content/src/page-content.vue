@@ -25,6 +25,14 @@
       <template #updateAt="scope">
         <span>{{ $filters.formatTime(scope.row.updateAt) }}</span>
       </template>
+      <template #image="scope">
+        <el-image
+          style="width: 100px; height: 100px"
+          :src="scope.row.imgUrl"
+          :preview-src-list="[scope.row.imgUrl]"
+        >
+        </el-image>
+      </template>
       <template #handler>
         <div class="handle-btns">
           <el-button icon="el-icon-edit" size="mini" type="text">编辑</el-button>
@@ -60,6 +68,7 @@ export default defineComponent({
 
     // 1.双向绑定pageInfo (分页逻辑)
     const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    // 2.监听pageInfo值改变，根据最新数据重新发送请求
     watch(pageInfo, () => getPageData())
 
     // 发送网络请求：提交到store子模块systemModule中调用getPageListAction方法
@@ -71,8 +80,8 @@ export default defineComponent({
         // 查询参数
         queryInfo: {
           // offset 偏移量(请求第几页)
-          offset: 0,
-          size: 10,
+          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          size: pageInfo.value.pageSize,
           ...queryInfo
         }
       })
@@ -86,6 +95,7 @@ export default defineComponent({
     // 拿到数据的数量
     // const dataCount = computed(() => store.state.systemModule.userCount)
     const dataCount = computed(() => store.getters[`systemModule/pageListCount`](props.pageName))
+
     return {
       dataList,
       getPageData,

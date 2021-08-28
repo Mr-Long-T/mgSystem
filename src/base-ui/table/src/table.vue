@@ -29,7 +29,7 @@
       ></el-table-column>
       <!-- 根据proplist生成column -->
       <template v-for="propItem in propList" :key="propItem.prop">
-        <el-table-column v-bind="propItem" align="center">
+        <el-table-column v-bind="propItem" align="center" show-overflow-tooltip>
           <template #default="scope">
             <!-- 有些内容可能不以文本的形式展示 -->
             <!-- 插槽的name不能写死 -->
@@ -48,7 +48,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="page.currentPage"
-          :page-sizes="[10, 20, 30]"
+          :page-sizes="[10, 20]"
           :page-size="page.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="listCount"
@@ -101,7 +101,7 @@ export default defineComponent({
       emit('selectionChange', value)
     }
 
-    // 分页 修改当前页
+    // 分页 更改当前展示页
     const handleCurrentChange = (currentPage: number) => {
       emit('update:page', { ...props.page, currentPage })
     }
