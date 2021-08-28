@@ -29,7 +29,7 @@ const systemModule: Module<ISystemState, IRootState> = {
     }
   },
   getters: {
-    //返回一个函数
+    //返回一个函数(根据传进来的pageName拼接url)
     pageListData(state) {
       return (pageName: string) => {
         return (state as any)[`${pageName}List`]
@@ -40,8 +40,14 @@ const systemModule: Module<ISystemState, IRootState> = {
         //     return state.roleList
         // }
       }
+    },
+    pageListCount(state) {
+      return (pageName: string) => {
+        return (state as any)[`${pageName}Count`]
+      }
     }
   },
+
   actions: {
     // 根据查询条件 和 pageUrl 发送网络请求
     async getPageListAction({ commit }, payload: any) {

@@ -1,6 +1,12 @@
 <template>
   <div class="page-content">
-    <lt-table :listData="dataList" v-bind="contentTableConfig">
+    <!-- 给page双向绑定的，page update：modelValue 不取名：属性modelValue 事件update:modelValue -->
+    <lt-table
+      :listData="dataList"
+      v-bind="contentTableConfig"
+      :listCount="dataCount"
+      v-model:page="pageInfo"
+    >
       <!-- header中插槽 -->
       <template #headerHandler>
         <el-button type="primary" size="mini">新建用户</el-button>
@@ -30,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
 
 import LtTable from '@/base-ui/table'
@@ -51,23 +57,40 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore()
-    // 提交到store子模块systemModule中调用getPageListAction方法发送网络请求
-    store.dispatch('systemModule/getPageListAction', {
-      // 查询路径（通过传进来的路径作为查询路径）
-      pageName: props.pageName,
-      // 查询参数
-      queryInfo: {
-        offset: 0,
-        size: 10
-      }
-    })
 
+    // 1.双向绑定pageInfo (分页逻辑)
+    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    watch(pageInfo, () => getPageData())
+
+    // 发送网络请求：提交到store子模块systemModule中调用getPageListAction方法
+    const getPageData = (queryInfo: any = {}) => {
+      // if (!isQuery) return
+      store.dispatch('systemModule/getPageListAction', {
+        // 查询路径（通过传进来的路径作为查询路径）
+        pageName: props.pageName,
+        // 查询参数
+        queryInfo: {
+          // offset 偏移量(请求第几页)
+          offset: 0,
+          size: 10,
+          ...queryInfo
+        }
+      })
+    }
+
+    getPageData()
+
+    // 从vuex中获取数据
     // const userList = computed(() => store.state.systemModule.userList)
-    // const userCount = computed(() => store.state.system.userCount)
     const dataList = computed(() => store.getters[`systemModule/pageListData`](props.pageName))
-
+    // 拿到数据的数量
+    // const dataCount = computed(() => store.state.systemModule.userCount)
+    const dataCount = computed(() => store.getters[`systemModule/pageListCount`](props.pageName))
     return {
-      dataList
+      dataList,
+      getPageData,
+      dataCount,
+      pageInfo
     }
   }
 })

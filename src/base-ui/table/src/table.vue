@@ -9,6 +9,7 @@
         </div>
       </slot>
     </div>
+
     <!-- 列表 -->
     <el-table :data="listData" border style="width: 100%" @selection-change="handleSelectionChange">
       <!-- 选中：会触发table的selection-change事件 -->
@@ -39,17 +40,18 @@
         </el-table-column>
       </template>
     </el-table>
+
     <!-- 尾部分页 -->
     <div class="footer">
       <slot name="footer">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :current-page="page.currentPage"
+          :page-sizes="[10, 20, 30]"
+          :page-size="page.pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="listCount"
         >
         </el-pagination>
       </slot>
@@ -70,6 +72,10 @@ export default defineComponent({
       type: Array,
       required: true
     },
+    listCount: {
+      type: Number,
+      default: 0
+    },
     propList: {
       type: Array,
       required: true
@@ -81,17 +87,32 @@ export default defineComponent({
     showSelectColumn: {
       type: Boolean,
       default: false
+    },
+    page: {
+      type: Object,
+      default: () => ({ currentPage: 0, pageSize: 10 })
     }
   },
-  emits: ['selectionChange'],
+  emits: ['selectionChange', 'update:page'],
   setup(props, { emit }) {
+    // 选中事件
     const handleSelectionChange = (value: any) => {
       console.log(value)
-
       emit('selectionChange', value)
     }
+
+    // 分页 修改当前页
+    const handleCurrentChange = (currentPage: number) => {
+      emit('update:page', { ...props.page, currentPage })
+    }
+    // 修改当前页显示条目
+    const handleSizeChange = (pageSize: number) => {
+      emit('update:page', { ...props.page, pageSize })
+    }
     return {
-      handleSelectionChange
+      handleSelectionChange,
+      handleCurrentChange,
+      handleSizeChange
     }
   }
 })
