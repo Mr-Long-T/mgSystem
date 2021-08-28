@@ -9,7 +9,7 @@
     >
       <!-- header中插槽 -->
       <template #headerHandler>
-        <el-button type="primary" size="mini">新建用户</el-button>
+        <el-button v-if="isCreate" type="primary" size="mini">新建用户</el-button>
         <el-button icon="el-icon-refresh" size="mini"></el-button>
       </template>
 
@@ -25,19 +25,18 @@
       <template #updateAt="scope">
         <span>{{ $filters.formatTime(scope.row.updateAt) }}</span>
       </template>
-      <template #image="scope">
-        <el-image
-          style="width: 100px; height: 100px"
-          :src="scope.row.imgUrl"
-          :preview-src-list="[scope.row.imgUrl]"
-        >
-        </el-image>
-      </template>
       <template #handler>
         <div class="handle-btns">
-          <el-button icon="el-icon-edit" size="mini" type="text">编辑</el-button>
-          <el-button icon="el-icon-delete" size="mini" type="text">删除</el-button>
+          <el-button v-if="isUpdate" icon="el-icon-edit" size="mini" type="text">编辑</el-button>
+          <el-button v-if="isDelete" icon="el-icon-delete" size="mini" type="text">删除</el-button>
         </div>
+      </template>
+      <!-- 在page-content中动态插入剩余的插槽 由传入的config决定-->
+      <template v-for="item in otherPropSlots" :key="item.prop" #[item.slotName]="scope">
+        <!-- slotName有值的时候设置 -->
+        <template v-if="item.slotName">
+          <slot :name="item.slotName" :row="scope.row"></slot>
+        </template>
       </template>
     </lt-table>
   </div>
@@ -46,6 +45,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
+import { usePermission } from '@/hooks/use-permission'
 
 import LtTable from '@/base-ui/table'
 
@@ -66,14 +66,21 @@ export default defineComponent({
   setup(props) {
     const store = useStore()
 
+    // 0.获取操作的权限
+    const isCreate = usePermission(props.pageName, 'create')
+    const isUpdate = usePermission(props.pageName, 'update')
+    const isDelete = usePermission(props.pageName, 'delete')
+    const isQuery = usePermission(props.pageName, 'query')
+
     // 1.双向绑定pageInfo (分页逻辑)
     const pageInfo = ref({ currentPage: 0, pageSize: 10 })
-    // 2.监听pageInfo值改变，根据最新数据重新发送请求
+    // 监听pageInfo值改变，根据最新数据重新发送请求
     watch(pageInfo, () => getPageData())
 
-    // 发送网络请求：提交到store子模块systemModule中调用getPageListAction方法
+    // 2.发送网络请求：提交到store子模块systemModule中调用getPageListAction方法
     const getPageData = (queryInfo: any = {}) => {
-      // if (!isQuery) return
+      // 查询权限 有-->发送网络请求
+      if (!isQuery) return
       store.dispatch('systemModule/getPageListAction', {
         // 查询路径（通过传进来的路径作为查询路径）
         pageName: props.pageName,
@@ -89,18 +96,32 @@ export default defineComponent({
 
     getPageData()
 
-    // 从vuex中获取数据
+    // 3.从vuex中获取数据
     // const userList = computed(() => store.state.systemModule.userList)
     const dataList = computed(() => store.getters[`systemModule/pageListData`](props.pageName))
     // 拿到数据的数量
     // const dataCount = computed(() => store.state.systemModule.userCount)
     const dataCount = computed(() => store.getters[`systemModule/pageListCount`](props.pageName))
 
+    // 4.获取其他的动态插槽名称
+    const otherPropSlots = props.contentTableConfig?.propList.filter((item: any) => {
+      // 过滤掉公共 slotName
+      if (item.slotName === 'status') return false
+      if (item.slotName === 'createAt') return false
+      if (item.slotName === 'updateAt') return false
+      if (item.slotName === 'handler') return false
+      return true
+    })
+
     return {
       dataList,
       getPageData,
       dataCount,
-      pageInfo
+      pageInfo,
+      otherPropSlots,
+      isCreate,
+      isUpdate,
+      isDelete
     }
   }
 })

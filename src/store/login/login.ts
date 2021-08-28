@@ -11,7 +11,7 @@ import { IAccount } from '@/service/login/types'
 import { ILoginState } from './types'
 import { IRootState } from '../types'
 import router from '@/router'
-import { mapMenusToRoutes } from '@/utils/map-menus'
+import { mapMenusToPermissions, mapMenusToRoutes } from '@/utils/map-menus'
 
 //Module<S, R>  S->模块中state的类型 R->跟store中state的类型
 const loginModule: Module<ILoginState, IRootState> = {
@@ -20,7 +20,8 @@ const loginModule: Module<ILoginState, IRootState> = {
     return {
       token: '',
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissions: []
     }
   },
   getters: {},
@@ -37,13 +38,17 @@ const loginModule: Module<ILoginState, IRootState> = {
 
       //userMenus 映射到 routes
       const routes = mapMenusToRoutes(userMenus)
-      // console.log('需要加载的路由routes', routes)
+      // console.log('注册动态路由', routes)
 
       //将routes 添加到 router.main.children
       routes.forEach((route) => {
         //动态添加路由（添加到main的children里面去了）
         router.addRoute('main', route)
       })
+
+      // 获取用户按钮的权限
+      const permissions = mapMenusToPermissions(userMenus)
+      state.permissions = permissions
     }
   },
 
