@@ -2,7 +2,12 @@ import { Module } from 'vuex'
 import { IRootState } from '@/store/types'
 import { ISystemState } from './types'
 
-import { deletePageData, getPageListData } from '@/service/main/system/system'
+import {
+  deletePageData,
+  getPageListData,
+  createPageData,
+  editPageData
+} from '@/service/main/system/system'
 
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
@@ -105,7 +110,7 @@ const systemModule: Module<ISystemState, IRootState> = {
       // }
     },
 
-    // 删除/编辑/新建
+    // 一、删除操作
     async deletePageDataAction({ dispatch }, payload: any) {
       // 1.获取pageName和id
       // pageName -> /users
@@ -117,6 +122,39 @@ const systemModule: Module<ISystemState, IRootState> = {
       await deletePageData(pageUrl)
 
       // 3.重新请求最新的数据
+      dispatch('getPageListAction', {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+
+    // 二、创建数据的请求
+    async createPageDataAction({ dispatch }, payload: any) {
+      const { pageName, newData } = payload
+      const pageUrl = `/${pageName}`
+      await createPageData(pageUrl, newData)
+
+      // 请求最新的数据
+      dispatch('getPageListAction', {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
+    },
+
+    // 三、编辑数据的请求
+    async editPageDataAction({ dispatch }, payload: any) {
+      const { pageName, editData, id } = payload
+      console.log(editData)
+      const pageUrl = `/${pageName}/${id}`
+      await editPageData(pageUrl, editData)
+
+      // 请求最新的数据
       dispatch('getPageListAction', {
         pageName,
         queryInfo: {

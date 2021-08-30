@@ -14,14 +14,15 @@
     />
     <page-modal
       :defaultInfo="defaultInfo"
+      pageName="users"
       ref="pageModalRef"
-      :modalConfig="modalConfig"
+      :modalConfig="modalConfigRef"
     ></page-modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 import PageSearch from '@/components/page-search'
 import PageContent from '@/components/page-content'
@@ -33,6 +34,7 @@ import { modalConfig } from './config/modal.config'
 
 import { usePageSearch } from '@/hooks/use-page-search'
 import { usePageModal } from '@/hooks/use-page-modal'
+import { useStore } from '@/store'
 
 export default defineComponent({
   name: 'users',
@@ -55,19 +57,20 @@ export default defineComponent({
       passwordItem!.isHidden = true
     }
 
-    // 2.动态添加部门和角色列表
-    // const store = useStore()
-    // const modalConfigRef = computed(() => {
-    //   const departmentItem = modalConfig.formItems.find((item) => item.field === 'departmentId')
-    //   departmentItem!.options = store.state.entireDepartment.map((item) => {
-    //     return { title: item.name, value: item.id }
-    //   })
-    //   const roleItem = modalConfig.formItems.find((item) => item.field === 'roleId')
-    //   roleItem!.options = store.state.entireRole.map((item) => {
-    //     return { title: item.name, value: item.id }
-    //   })
-    //   return modalConfig
-    // })
+    // 2.动态添加部门和角色列表到
+    const store = useStore()
+    const modalConfigRef = computed(() => {
+      const departmentItem = modalConfig.formItems.find((item) => item.field === 'departmentId')
+      departmentItem!.options = store.state.entireDepartment.map((item) => {
+        return { title: item.name, value: item.id }
+      })
+
+      const roleItem = modalConfig.formItems.find((item) => item.field === 'roleId')
+      roleItem!.options = store.state.entireRole.map((item) => {
+        return { title: item.name, value: item.id }
+      })
+      return modalConfig
+    })
 
     const [pageModalRef, defaultInfo, handleNewData, handleEditData] = usePageModal(
       newCallback,
@@ -80,7 +83,8 @@ export default defineComponent({
       pageContentRef,
       handleResetClick,
       handleQueryClick,
-      modalConfig,
+      // modalConfig，
+      modalConfigRef,
       pageModalRef,
       defaultInfo,
       handleNewData,
@@ -89,5 +93,4 @@ export default defineComponent({
   }
 })
 </script>
-
 <style scoped></style>

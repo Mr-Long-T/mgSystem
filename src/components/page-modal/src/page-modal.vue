@@ -55,17 +55,17 @@ export default defineComponent({
     const handleConfirmClick = () => {
       dialogVisible.value = false
       if (Object.keys(props.defaultInfo).length) {
-        // 编辑
+        // 编辑的确定按钮事件
         console.log('编辑用户')
-        store.dispatch('system/editPageDataAction', {
+        store.dispatch('systemModule/editPageDataAction', {
           pageName: props.pageName,
           editData: { ...formData.value },
           id: props.defaultInfo.id
         })
       } else {
-        // 新建
+        // 新建的确定按钮事件
         console.log('新建用户')
-        store.dispatch('system/createPageDataAction', {
+        store.dispatch('systemModule/createPageDataAction', {
           pageName: props.pageName,
           newData: { ...formData.value }
         })
