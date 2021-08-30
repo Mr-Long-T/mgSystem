@@ -9,7 +9,9 @@
     >
       <!-- header中插槽 -->
       <template #headerHandler>
-        <el-button v-if="isCreate" type="primary" size="mini">新建用户</el-button>
+        <el-button v-if="isCreate" type="primary" size="mini" @click="handleNewClick"
+          >新建用户</el-button
+        >
         <el-button icon="el-icon-refresh" size="mini"></el-button>
       </template>
 
@@ -25,10 +27,24 @@
       <template #updateAt="scope">
         <span>{{ $filters.formatTime(scope.row.updateAt) }}</span>
       </template>
-      <template #handler>
+      <template #handler="scope">
         <div class="handle-btns">
-          <el-button v-if="isUpdate" icon="el-icon-edit" size="mini" type="text">编辑</el-button>
-          <el-button v-if="isDelete" icon="el-icon-delete" size="mini" type="text">删除</el-button>
+          <el-button
+            v-if="isUpdate"
+            icon="el-icon-edit"
+            size="mini"
+            type="text"
+            @click="handleEditClick(scope.row)"
+            >编辑</el-button
+          >
+          <el-button
+            v-if="isDelete"
+            icon="el-icon-delete"
+            size="mini"
+            type="text"
+            @click="handleDeleteClick(scope.row)"
+            >删除</el-button
+          >
         </div>
       </template>
       <!-- 在page-content中动态插入剩余的插槽 由传入的config决定-->
@@ -63,7 +79,8 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props, { emit }) {
     const store = useStore()
 
     // 0.获取操作的权限
@@ -72,8 +89,8 @@ export default defineComponent({
     const isDelete = usePermission(props.pageName, 'delete')
     const isQuery = usePermission(props.pageName, 'query')
 
-    // 1.双向绑定pageInfo (分页逻辑)
-    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    // 1.双向绑定pageInfo (分页逻辑,显示第1页，但是偏移量为0)
+    const pageInfo = ref({ currentPage: 1, pageSize: 10 })
     // 监听pageInfo值改变，根据最新数据重新发送请求
     watch(pageInfo, () => getPageData())
 
@@ -87,7 +104,7 @@ export default defineComponent({
         // 查询参数
         queryInfo: {
           // offset 偏移量(请求第几页)
-          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          offset: (pageInfo.value.currentPage - 1) * pageInfo.value.pageSize,
           size: pageInfo.value.pageSize,
           ...queryInfo
         }
@@ -113,6 +130,23 @@ export default defineComponent({
       return true
     })
 
+    // 5.删除/编辑/新建操作
+    const handleDeleteClick = (item: any) => {
+      // item --> 操作对象
+      // console.log(item)
+      store.dispatch('systemModule/deletePageDataAction', {
+        pageName: props.pageName,
+        id: item.id
+      })
+    }
+
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
+
     return {
       dataList,
       getPageData,
@@ -121,7 +155,10 @@ export default defineComponent({
       otherPropSlots,
       isCreate,
       isUpdate,
-      isDelete
+      isDelete,
+      handleDeleteClick,
+      handleNewClick,
+      handleEditClick
     }
   }
 })
