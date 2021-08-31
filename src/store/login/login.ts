@@ -81,11 +81,15 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
 
     //登录状态下刷新页面调用此方法(去缓存中拿数据)
-    loadLocalLogin({ commit }) {
+    loadLocalLogin({ commit, dispatch }) {
       const token = localCache.getCache('token')
       if (token) {
         commit('changeToken', token)
       }
+
+      //拿到token后，发送初始化请求role/department数据
+      dispatch('getInitialDataAction', null, { root: true })
+
       const userInfo = localCache.getCache('userInfo')
       if (userInfo) {
         commit('changeUserInfo', userInfo)

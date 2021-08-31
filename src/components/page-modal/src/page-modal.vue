@@ -2,6 +2,7 @@
   <div class="page-modal">
     <el-dialog title="新建用户" v-model="dialogVisible" width="30%" center destroy-on-close>
       <lt-form v-bind="modalConfig" v-model="formData"></lt-form>
+      <slot></slot>
       <template #footer>
         <span class="dialog-footer">
           <el-button type="primary" @click="handleConfirmClick"> 确 定 </el-button>
@@ -28,6 +29,10 @@ export default defineComponent({
       required: true
     },
     defaultInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    otherInfo: {
       type: Object,
       default: () => ({})
     },
@@ -59,7 +64,7 @@ export default defineComponent({
         console.log('编辑用户')
         store.dispatch('systemModule/editPageDataAction', {
           pageName: props.pageName,
-          editData: { ...formData.value },
+          editData: { ...formData.value, ...props.otherInfo },
           id: props.defaultInfo.id
         })
       } else {
@@ -67,7 +72,7 @@ export default defineComponent({
         console.log('新建用户')
         store.dispatch('systemModule/createPageDataAction', {
           pageName: props.pageName,
-          newData: { ...formData.value }
+          newData: { ...formData.value, ...props.otherInfo }
         })
       }
     }

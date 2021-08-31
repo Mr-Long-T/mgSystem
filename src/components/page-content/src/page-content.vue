@@ -10,7 +10,7 @@
       <!-- header中插槽 -->
       <template #headerHandler>
         <el-button v-if="isCreate" type="primary" size="mini" @click="handleNewClick"
-          >新建用户</el-button
+          >新建</el-button
         >
         <el-button icon="el-icon-refresh" size="mini"></el-button>
       </template>
